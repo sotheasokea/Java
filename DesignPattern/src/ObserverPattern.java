@@ -10,7 +10,7 @@ public class ObserverPattern {
     Subscriber s3 = new Subscriber("Harn");
 
     channel.subscribe(s1);
-    channel.subscribe(s2);
+    channel.subscribe(s2); 
     channel.subscribe(s3);
 
     channel.uploadVideo("How to learn something, while doing nothing");

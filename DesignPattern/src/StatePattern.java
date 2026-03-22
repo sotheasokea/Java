@@ -5,7 +5,7 @@ public class StatePattern {
     v1.nextLight();
     v1.nextLight();
     v1.nextLight();
-    v1.nextLight();
+    v1.nextLight();  
   }
 }
 

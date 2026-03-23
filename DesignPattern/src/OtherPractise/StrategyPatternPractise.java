@@ -55,7 +55,7 @@ class ChooseOption{
 
   void speak(){
     if(language == null){
-      System.out.println("Bro!! Choose a language🫣");
+      System.out.println("Bro!! Choose a language");
       return;
     }
 

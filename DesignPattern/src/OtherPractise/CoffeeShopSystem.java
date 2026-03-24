@@ -32,7 +32,7 @@ public class CoffeeShopSystem {
     System.out.println("************* With MVC **************");
 
     OrderModel model = new OrderModel();
-    OrderView view   = new OrderView();
+    OrderView view   = new OrderView(model);
     OrderController controller = new OrderController(model, view);
 
     List<String> toppings = new ArrayList<>();
@@ -42,7 +42,7 @@ public class CoffeeShopSystem {
     controller.placeOrder(DrinkType.ESPRESSO, toppings, "ewallet");
 
     view.displayMessage("======== Place an Order =========");
-    controller.showORder();
+    controller.showOrder();
 
     controller.processPayment();
 
@@ -237,7 +237,7 @@ class PaymentContext{
 class OrderModel{
   private Drink drink;
   private String paymentMethod;
-  double totalCost;
+  private double totalCost;
 
   public void setDrink(Drink drink){
     this.drink = drink;
@@ -251,7 +251,7 @@ class OrderModel{
    public Drink getDrink(){
     return drink;
    }
-   public String getPayemntMethod(){
+   public String getPaymentMethod(){
     return paymentMethod;
    }
    public double getTotalCost(){
@@ -260,18 +260,21 @@ class OrderModel{
 }
 
 class OrderView{
-  OrderModel order;
-  public void displayOrder(String drinkName, double cost, String payment){
-    System.out.println("Drink : "+drinkName);
-    System.out.println("Price: $"+cost);
-    System.out.println("Payment method: "+payment);
+  private OrderModel model;
+  public OrderView(OrderModel model){
+    this.model = model;
   }
-  public void displayReceipt(String drinkName, double finalCost, String payment){
+  public void displayOrder(){
+    System.out.println("Drink : "+model.getDrink().getName());
+    System.out.println("Price: $"+model.getDrink().getCost());
+    System.out.println("Payment method: "+model.getPaymentMethod());
+  }
+  public void displayReceipt(){
     System.out.println("=========== Receipt ===========");
-    System.out.println("Drink : "+drinkName);
-    System.out.println("Final Cost: $"+finalCost);
-    System.out.println("Payment method: "+payment);
-    System.out.println("Thank you for visiting!");
+    System.out.println("Drink : "+model.getDrink().getName());
+    System.out.println("Final Cost: $"+model.getTotalCost());
+    System.out.println("Payment method: "+model.getPaymentMethod());
+    System.out.println("Thank you for visiting our coffee shop!");
   }
   public void displayMessage(String message){
     System.out.println(message);
@@ -282,15 +285,16 @@ class OrderController{
   private OrderModel model;
   private OrderView view;
   private PaymentContext payment;
+  DrinkFactory chooseYourDrink;
 
   public OrderController(OrderModel model, OrderView view){
     this.model = model;
     this.view  = view;
     this.payment = new PaymentContext();
+    this.chooseYourDrink = new DrinkFactory();
   }
 
   public void placeOrder(DrinkType type, List<String> toppings, String paymentType){
-    DrinkFactory chooseYourDrink = new DrinkFactory();
     Drink drink = chooseYourDrink.createDrink(type);
 
     // decorate the drink
@@ -318,9 +322,8 @@ class OrderController{
     model.setDrink(drink);
     model.setPaymentMethod(paymentType);
   }
-  public void showORder(){
-    view.displayOrder(model.getDrink().getName(), 
-    model.getDrink().getCost(), model.getPayemntMethod());
+  public void showOrder(){
+    view.displayOrder();
   }
   public void processPayment(){
     double originalCost = model.getDrink().getCost();
@@ -331,7 +334,7 @@ class OrderController{
 
     view.displayMessage("======= Processing Payment ========");
     payment.processPayment(originalCost);
-    view.displayReceipt(model.getDrink().getName(), model.getTotalCost(), model.getPayemntMethod());
+    view.displayReceipt();
   }
 }
 
